@@ -38,3 +38,8 @@ This repository contains all the resources and configurations for the Cloud DevO
 ```bash
 kubectl get nodes -o wide
 
+### Kubeconfig Setup
+- Updated `~/.kube/config` to point to the new EKS cluster.
+- Verified nodes with:
+```bash
+kubectl get nodes -o wide
