@@ -1,0 +1,9 @@
+project                = "cloud-devops-project"
+vpc_id                 = "vpc-0b2798d115197066a"
+subnet_id              = "subnet-0217acab6e7bf6b82"
+ami_id                 = "ami-07fd08aad95a03016"
+instance_type          = "t3.micro"
+key_name               = "omar-key"
+ssh_allowed_cidrs      = ["156.197.116.73/32"]
+jenkins_allowed_cidrs  = ["156.197.116.73/32"]
+jenkins_port           = 8080

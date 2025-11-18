@@ -43,3 +43,45 @@ kubectl get nodes -o wide
 - Verified nodes with:
 ```bash
 kubectl get nodes -o wide
+
+
+---
+
+## . AWS Resources Provisioned
+
+- **VPC**: Custom or existing VPC used for EC2 instances.  
+- **Subnets**: Public subnets within the VPC.  
+- **Internet Gateway (IGW)**: Allows EC2 instances to access the Internet.  
+- **Security Group**:
+  - `cloud-devops-project-jenkins-sg`  
+  - Allows SSH (`22`) and Jenkins (`8080`) access from your IP.  
+- **EC2 Instance**:
+  - Jenkins server on `t3.micro`  
+  - Public IP assigned automatically  
+- **Elastic IP**: Optional static IP for Jenkins  
+- **CloudWatch Monitoring**: Integrated for EC2 instance metrics
+
+---
+
+## 4. Terraform Modules
+
+- **Network Module**:
+  - Creates VPC, subnets, IGW, routing tables  
+- **Server Module**:
+  - Creates EC2 instance with Jenkins setup  
+  - Associates Security Group  
+  - Optionally runs user_data scripts to install Jenkins  
+
+---
+
+## 4. Variables (`dev.tfvars` example)
+```hcl
+project               = "cloud-devops-project"
+vpc_id                = "vpc-0b2798d115197066a"
+subnet_id             = "subnet-0217acab6e7bf6b82"
+ami_id                = "ami-07fd08aad95a03016"
+instance_type         = "t3.micro"
+key_name              = "omar-key"
+ssh_allowed_cidrs     = ["156.197.116.73/32"]
+jenkins_allowed_cidrs = ["156.197.116.73/32"]
+jenkins_port          = 8080
