@@ -1,0 +1,49 @@
+{
+    "InstanceInformationList": [
+        {
+            "InstanceId": "i-092a806f7b1e906bc",
+            "PingStatus": "Online",
+            "LastPingDateTime": "2025-11-19T16:53:24.867000+02:00",
+            "AgentVersion": "3.3.3050.0",
+            "IsLatestVersion": false,
+            "PlatformType": "Linux",
+            "PlatformName": "Amazon Linux",
+            "PlatformVersion": "2023",
+            "ResourceType": "EC2Instance",
+            "IPAddress": "172.31.17.60",
+            "ComputerName": "ip-172-31-17-60.ec2.internal",
+            "SourceId": "i-092a806f7b1e906bc",
+            "SourceType": "AWS::EC2::Instance"
+        },
+        {
+            "InstanceId": "i-06c833d2028f27988",
+            "PingStatus": "Online",
+            "LastPingDateTime": "2025-11-19T16:52:53.104000+02:00",
+            "AgentVersion": "3.3.3050.0",
+            "IsLatestVersion": false,
+            "PlatformType": "Linux",
+            "PlatformName": "Amazon Linux",
+            "PlatformVersion": "2023",
+            "ResourceType": "EC2Instance",
+            "IPAddress": "192.168.59.72",
+            "ComputerName": "ip-192-168-59-72.ec2.internal",
+            "SourceId": "i-06c833d2028f27988",
+            "SourceType": "AWS::EC2::Instance"
+        },
+        {
+            "InstanceId": "i-06e84c6426e3c6203",
+            "PingStatus": "Online",
+            "LastPingDateTime": "2025-11-19T16:54:12.368000+02:00",
+            "AgentVersion": "3.3.3050.0",
+            "IsLatestVersion": false,
+            "PlatformType": "Linux",
+            "PlatformName": "Amazon Linux",
+            "PlatformVersion": "2023",
+            "ResourceType": "EC2Instance",
+            "IPAddress": "192.168.27.203",
+            "ComputerName": "ip-192-168-27-203.ec2.internal",
+            "SourceId": "i-06e84c6426e3c6203",
+            "SourceType": "AWS::EC2::Instance"
+        }
+    ]
+}

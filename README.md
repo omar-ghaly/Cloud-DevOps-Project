@@ -47,34 +47,35 @@ kubectl get nodes -o wide
 
 ---
 
-## . AWS Resources Provisioned
+## 4. AWS Resources Provisioned
 
-- **VPC**: Custom or existing VPC used for EC2 instances.  
-- **Subnets**: Public subnets within the VPC.  
-- **Internet Gateway (IGW)**: Allows EC2 instances to access the Internet.  
+- **VPC**: Custom or existing VPC used for EC2 instances.
+- **Subnets**: Public subnets within the VPC.
+- **Internet Gateway (IGW)**: Allows EC2 instances to access the Internet.
 - **Security Group**:
-  - `cloud-devops-project-jenkins-sg`  
-  - Allows SSH (`22`) and Jenkins (`8080`) access from your IP.  
+  - `cloud-devops-project-jenkins-sg`
+  - Allows SSH (`22`) and Jenkins (`8080`) access from your IP.
 - **EC2 Instance**:
-  - Jenkins server on `t3.micro`  
-  - Public IP assigned automatically  
-- **Elastic IP**: Optional static IP for Jenkins  
+  - Jenkins server on `t3.micro`
+  - Public IP assigned automatically
+- **Elastic IP**: Optional static IP for Jenkins
 - **CloudWatch Monitoring**: Integrated for EC2 instance metrics
 
 ---
 
-## 4. Terraform Modules
+## 5. Terraform Modules
 
-- **Network Module**:
-  - Creates VPC, subnets, IGW, routing tables  
-- **Server Module**:
-  - Creates EC2 instance with Jenkins setup  
-  - Associates Security Group  
-  - Optionally runs user_data scripts to install Jenkins  
+### Network Module
+- Creates VPC, subnets, IGW, routing tables
+
+### Server Module
+- Creates EC2 instance with Jenkins setup
+- Associates Security Group
+- Optionally runs user_data scripts to install Jenkins
 
 ---
 
-## 4. Variables (`dev.tfvars` example)
+## 6. Variables (`dev.tfvars` example)
 ```hcl
 project               = "cloud-devops-project"
 vpc_id                = "vpc-0b2798d115197066a"
@@ -85,3 +86,45 @@ key_name              = "omar-key"
 ssh_allowed_cidrs     = ["156.197.116.73/32"]
 jenkins_allowed_cidrs = ["156.197.116.73/32"]
 jenkins_port          = 8080
+```
+
+---
+
+## 7. Configuration Management with Ansible
+
+### Overview
+This phase uses Ansible to configure EC2 instances with all required tools and services for the Cloud DevOps environment.
+
+### Tasks Completed
+- **Install Required Packages**: Git, Docker, Java 17 (Amazon Corretto)
+- **Install and Configure Jenkins**:
+  - Added Jenkins repository and imported the GPG key
+  - Installed Jenkins
+  - Updated JAVA_HOME to point to Java 17
+  - Configured Jenkins service to start and enable on boot
+  - Verified Jenkins is running on port 8080
+
+### Ansible Roles Used
+- **java**: Installs Java 17 (Amazon Corretto) and verifies installation
+- **docker**: Installs Docker, starts and enables the service, and adds ec2-user to the Docker group
+- **git**: Installs Git
+- **jenkins**: Installs Jenkins, configures the environment, and manages the service
+
+### Dynamic Inventory
+Used `dynamic_inventory.aws_ec2.yaml` to automatically target EC2 instances based on AWS tags and filters.
+
+### Playbook Execution
+```bash
+ansible-playbook site.yaml -i dynamic_inventory.aws_ec2.yaml -u ec2-user --private-key ./omar-key.pem
+```
+
+### Verification
+- **Jenkins Access**: Accessible via `http://<EC2_PUBLIC_IP>:8080`
+- **Java Version**: Verified as 17 using `java -version`
+- **Jenkins Service Status**: Check with `sudo systemctl status jenkins`
+- **Docker**: Test with `docker run hello-world` (after logging in as ec2-user)
+
+### Deliverables
+Ansible playbooks, roles, and inventory files are committed to the repository under the `ansible/` directory.
+
+---

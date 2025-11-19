@@ -1,0 +1,28 @@
+---
+- name: Add Jenkins repo
+  get_url:
+    url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
+    dest: /etc/yum.repos.d/jenkins.repo
+
+- name: Import Jenkins key
+  rpm_key:
+    state: present
+    key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+
+- name: Install Jenkins
+  package:
+    name: jenkins
+    state: present
+
+- name: Ensure JAVA_HOME points to Java 17
+  lineinfile:
+    path: /etc/sysconfig/jenkins
+    regexp: '^JAVA_HOME='
+    line: 'JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto'
+    create: yes
+
+- name: Start and enable Jenkins service
+  service:
+    name: jenkins
+    state: started
+    enabled: yes

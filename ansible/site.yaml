@@ -1,0 +1,10 @@
+---
+- name: Configure EC2 Instance with Required Tools
+  hosts: cloud-devops-eks-standard-workers-Node
+  become: yes
+
+  roles:
+    - git
+    - java
+    - docker
+    - jenkins
