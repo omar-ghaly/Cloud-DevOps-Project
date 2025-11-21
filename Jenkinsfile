@@ -40,7 +40,8 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerBuild(IMAGE_NAME, IMAGE_TAG)
+                    // استخدام الـ Shared Library
+                    dockerBuild.call(IMAGE_NAME, IMAGE_TAG, './docker')
                 }
             }
         }
@@ -48,7 +49,7 @@ pipeline {
         stage('Scan Image with Trivy') {
             steps {
                 script {
-                    trivyScan(IMAGE_NAME, IMAGE_TAG, TRIVY_SEVERITY, TRIVY_EXIT_CODE as Integer)
+                    trivyScan.call(IMAGE_NAME, IMAGE_TAG, TRIVY_SEVERITY, TRIVY_EXIT_CODE as Integer)
                 }
             }
         }
@@ -56,7 +57,7 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 script {
-                    dockerPush(IMAGE_NAME, IMAGE_TAG, DOCKERHUB_CRED)
+                    dockerPush.call(IMAGE_NAME, IMAGE_TAG, DOCKERHUB_CRED)
                 }
             }
         }
@@ -64,7 +65,7 @@ pipeline {
         stage('Clean Local Images') {
             steps {
                 script {
-                    dockerCleanup(IMAGE_NAME, IMAGE_TAG, false)
+                    dockerCleanup.call(IMAGE_NAME, IMAGE_TAG, false)
                 }
             }
         }
@@ -72,7 +73,7 @@ pipeline {
         stage('Update Kubernetes Manifests') {
             steps {
                 script {
-                    updateManifests(K8S_MANIFEST_PATH, IMAGE_NAME, IMAGE_TAG)
+                    updateManifests.call(K8S_MANIFEST_PATH, IMAGE_NAME, IMAGE_TAG)
                 }
             }
         }
@@ -81,7 +82,7 @@ pipeline {
             steps {
                 script {
                     def commitMessage = "Updated image to ${IMAGE_TAG} [skip ci]"
-                    gitPushChanges(commitMessage, GIT_BRANCH, GIT_CRED)
+                    gitPushChanges.call(commitMessage, GIT_BRANCH, GIT_CRED)
                 }
             }
         }
@@ -91,7 +92,7 @@ pipeline {
     post {
         success {
             script {
-                notifyBuild('SUCCESS')
+                notifyBuild.call('SUCCESS')
                 echo 'Pipeline completed successfully!'
                 echo "Docker Image: ${IMAGE_NAME}:${IMAGE_TAG}"
                 echo "Manifests updated and pushed to Git"
@@ -100,7 +101,7 @@ pipeline {
 
         failure {
             script {
-                notifyBuild('FAILURE')
+                notifyBuild.call('FAILURE')
                 echo 'Pipeline failed!'
             }
         }

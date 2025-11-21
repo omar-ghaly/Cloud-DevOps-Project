@@ -1,8 +1,10 @@
+// vars/dockerBuild.groovy
 def call(String imageName, String imageTag = "latest", String dockerfilePath = "./docker") {
     echo "Building Docker image: ${imageName}:${imageTag} from ${dockerfilePath}"
+
     try {
-        // Use the pipeline's 'docker' object
-        def dockerImage = script.docker.build("${imageName}:${imageTag}", dockerfilePath)
+        // Use the script context to access pipeline DSL objects
+        def dockerImage = this.script.docker.build("${imageName}:${imageTag}", dockerfilePath)
         echo "Successfully built ${imageName}:${imageTag}"
         return dockerImage
     } catch (Exception e) {
