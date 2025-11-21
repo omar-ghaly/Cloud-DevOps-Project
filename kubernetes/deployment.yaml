@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
       - name: app
-        image: omarghalyy/cloud-devops-app:latest
+        image: omarghalyy/cloud-devops-app:123
         ports:
         - containerPort: 3000

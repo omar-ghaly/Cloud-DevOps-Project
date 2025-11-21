@@ -1,13 +1,20 @@
-// vars/dockerPush.groovy
-def call(String imageName, String tag = "latest") {
-    docker.withRegistry('', 'dockerhub') {
-        // Build Docker image
-        def img = docker.build("${imageName}:${tag}")
+#!/usr/bin/env groovy
 
-        // Push Docker image to DockerHub
-        img.push()
+def call(String imageName, String imageTag = "latest", String credentialsId, String registry = '') {
+    echo "Pushing Docker image: ${imageName}:${imageTag}"
 
-        // Remove local image to save space
-        docker.image("${imageName}:${tag}").remove()
+    try {
+        script {
+            docker.withRegistry(registry, credentialsId) {
+                def img = docker.image("${imageName}:${imageTag}")
+                img.push()
+                img.push('latest')
+            }
+        }
+        echo "Successfully pushed ${imageName}:${imageTag} to registry"
+        return true
+    } catch (Exception e) {
+        echo "Failed to push Docker image: ${e.message}"
+        throw e
     }
 }
