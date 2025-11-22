@@ -2,42 +2,39 @@
 
 pipeline {
     agent { label 'k8s' }
-
+    
     environment {
-        DOCKERHUB_CRED = 'dockerhub'
+        DOCKERHUB_CRED = 'dockerhub-creds'
         IMAGE_NAME = 'omarghalyy/cloud-devops-app'
         IMAGE_TAG = "${BUILD_NUMBER}"
-
-        GIT_CRED = 'github'
+        GIT_CRED = 'github-creds'
         GIT_BRANCH = 'main'
-
         K8S_MANIFEST_PATH = 'kubernetes'
         TRIVY_SEVERITY = 'CRITICAL,HIGH'
-        TRIVY_EXIT_CODE = 0
+        TRIVY_EXIT_CODE = '0'
     }
-
+    
     options {
         buildDiscarder(logRotator(numToKeepStr: '10'))
         timestamps()
         timeout(time: 30, unit: 'MINUTES')
         disableConcurrentBuilds()
     }
-
+    
     stages {
-
         stage('Cleanup Workspace') {
             steps {
                 echo "🧽 Cleaning workspace before starting..."
-                deleteDir()  // ← دا الكومنت اللي إنت طلبته
+                deleteDir()
             }
         }
-
+        
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
-
+        
         stage('Build Docker Image') {
             steps {
                 script {
@@ -45,15 +42,15 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Scan Image with Trivy') {
             steps {
                 script {
-                    trivyScan(IMAGE_NAME, IMAGE_TAG, TRIVY_SEVERITY, TRIVY_EXIT_CODE as Integer)
+                    trivyScan(IMAGE_NAME, IMAGE_TAG, TRIVY_SEVERITY, TRIVY_EXIT_CODE)
                 }
             }
         }
-
+        
         stage('Push Docker Image') {
             steps {
                 script {
@@ -61,15 +58,15 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Clean Local Images') {
             steps {
                 script {
-                    dockerCleanup(IMAGE_NAME, IMAGE_TAG, false)
+                    dockerCleanup(IMAGE_NAME, IMAGE_TAG)
                 }
             }
         }
-
+        
         stage('Update Kubernetes Manifests') {
             steps {
                 script {
@@ -77,7 +74,7 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Push Manifests to Git') {
             steps {
                 script {
@@ -86,12 +83,12 @@ pipeline {
             }
         }
     }
-
+    
     post {
         success {
             script {
                 notifyBuild('SUCCESS')
-                echo "🎉 Pipeline completed successfully"
+                echo "🎉 Pipeline completed successfully!"
             }
         }
         failure {

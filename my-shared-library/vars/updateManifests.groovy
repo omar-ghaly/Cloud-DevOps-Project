@@ -1,7 +1,9 @@
 def call(String path, String imageName, String imageTag) {
     echo "📝 Updating Kubernetes manifests..."
-
+    
     sh """
-        sed -i 's|image: .*|image: ${imageName}:${imageTag}|' ${path}/*.yaml
+        find ${path} -name '*.yaml' -o -name '*.yml' | xargs sed -i 's|image: ${imageName}:.*|image: ${imageName}:${imageTag}|g'
     """
+    
+    echo "✅ Kubernetes manifests updated to use image: ${imageName}:${imageTag}"
 }
