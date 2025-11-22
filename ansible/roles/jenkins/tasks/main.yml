@@ -1,18 +1,31 @@
----
-- name: Add Jenkins repo
+- name: Install required packages
+  package:
+    name:
+      - wget
+      - curl
+      - java-17-amazon-corretto
+    state: present
+
+- name: Add Jenkins YUM repository
   get_url:
     url: https://pkg.jenkins.io/redhat-stable/jenkins.repo
     dest: /etc/yum.repos.d/jenkins.repo
+    mode: '0644'
 
-- name: Import Jenkins key
+- name: Import Jenkins GPG key
   rpm_key:
     state: present
     key: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
 
-- name: Install Jenkins
+- name: Make sure yum cache is updated
+  ansible.builtin.yum:
+    update_cache: yes
+
+- name: Install Jenkins without GPG check if needed
   package:
     name: jenkins
     state: present
+    disable_gpg_check: yes
 
 - name: Ensure JAVA_HOME points to Java 17
   lineinfile:
@@ -21,8 +34,8 @@
     line: 'JAVA_HOME=/usr/lib/jvm/java-17-amazon-corretto'
     create: yes
 
-- name: Start and enable Jenkins service
-  service:
+- name: Enable and start Jenkins service
+  systemd:
     name: jenkins
     state: started
     enabled: yes
