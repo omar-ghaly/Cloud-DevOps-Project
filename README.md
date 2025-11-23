@@ -801,18 +801,6 @@ Feel free to reach out via any of the channels above!
 
 ---
 
-## 🙏 Acknowledgments
-
-- **iVolve Training Program** for project requirements
-- **Original Application**: [Ibrahim-Adel15/FinalProject](https://github.com/Ibrahim-Adel15/FinalProject)
-- **AWS Documentation** for cloud resources
-- **Kubernetes Community** for orchestration guides
-- **HashiCorp** for Terraform
-- **Ansible Community** for configuration management
-- **ArgoCD Team** for GitOps implementation
-
----
-
 ## 📈 Project Stats
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/omar-ghaly/Cloud-DevOps-Project)
